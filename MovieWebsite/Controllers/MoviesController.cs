@@ -148,14 +148,14 @@ namespace MovieWebsite.Controllers
                     if (movieInput.ImageFile != null)
                     {
                         movie.ImageName = await GetFileNameAsync(movieInput.ImageFile);
+                        await AddSelectedAsync(movieInput);
+                        await movieRepository.AddMovie(movie);
                     }
                     else
                     {
                         ModelState.AddModelError("ImageFile", "This field must not be leave empty!");
                         throw new Exception();
                     }
-                    await movieRepository.AddMovie(movie);
-                    await AddSelectedAsync(movieInput);
                 }
                 return RedirectToAction(nameof(Index), new { message = "Create successfully" });
             }
@@ -172,9 +172,6 @@ namespace MovieWebsite.Controllers
             //find movie
             var movie = await movieRepository.GetMovieByIdAsync(id);
             MovieInputModel inputModel;
-            var genres = new List<ManageMovieGenreViewModel>();
-            var moviePeople = new List<ManageMoviePeopleModel>();
-            var movieStatus = new List<ManageMovieStatusModel>();
             if (movie == null)
             {
                 return NotFound();
