@@ -11,7 +11,7 @@ namespace DataAccess
 {
     public class PeopleDao
     {
-        private static PeopleDao instance = null;
+        private static PeopleDao instance = null!;
         private static readonly object instanceLock = new object();
 
         public PeopleDao()

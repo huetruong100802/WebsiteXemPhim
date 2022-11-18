@@ -62,8 +62,8 @@ namespace MovieWebsite.Controllers
                 if (searchString != null)
                 {
                     searchResult = movieRepository.GetMoviesByKeyWord(searchString).ToList();
-                    ViewBag.SearchString = searchString;
                     movies=movies.IntersectBy(second:searchResult.Select(m=>m.Id), m => m.Id);
+                    ViewBag.SearchString = searchString;
                 }
                 if (genreName != null)
                 {

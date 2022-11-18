@@ -68,20 +68,24 @@ namespace DataAccess
         }
         public IEnumerable<Movie> GetMoviesByKeyWord(string keyWord)
         {
-            IEnumerable<Movie> movies;
+            IEnumerable<Movie> moviesByTitle;
+            IEnumerable<Movie> moviesByPeople;
             try
             {
                 MovieDbContext _context = new MovieDbContext();
-                movies = movies = from m in _context.Movies
+                moviesByTitle = from m in _context.Movies
                                   .Include(m => m.MovieGenres).Include(m => m.Episodes).Include(m => m.MovieStatuses)
                                   where m.Title!.Contains(keyWord!)
                                   select m;
+                moviesByPeople = from m in _context.MoviePeoples.Include(m => m.Movie).Include(m => m.People)
+                         where m.People.Name!.Contains(keyWord!)
+                         select m.Movie;
+                return moviesByTitle.UnionBy(second: moviesByPeople,m=>m.Id);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            return movies;
         }
         public async Task<Movie> GetMovieByIdAsync(string id)
         {
