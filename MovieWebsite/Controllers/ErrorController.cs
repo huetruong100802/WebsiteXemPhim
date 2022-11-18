@@ -28,10 +28,17 @@ namespace MovieWebsite.Controllers
         public IActionResult Error()
         {
             var exceptionDetail= HttpContext.Features.Get<IExceptionHandlerFeature>();
-            ViewBag.ExceptionPath = exceptionDetail!.Path;
-            ViewBag.ErrorMessage = exceptionDetail.Error.Message;
+            if (exceptionDetail != null)
+            {
+                ViewBag.ExceptionPath = exceptionDetail.Path;
+                ViewBag.ErrorMessage = exceptionDetail.Error.Message;
+                ViewBag.StackTrace = exceptionDetail.Error.StackTrace;
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Unknown error";
 
-            ViewBag.StackTrace = exceptionDetail.Error.StackTrace;
+            }
             //return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             return View("Error");
         }

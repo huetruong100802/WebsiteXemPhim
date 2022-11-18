@@ -49,12 +49,13 @@ namespace MovieWebsite.Controllers
         }
         [AllowAnonymous]
         // GET: MoviesController1
-        public async Task<IActionResult> Index(string? searchString, string? genreName, string? message, string? nation)
+        public IActionResult Index(string? searchString, string? genreName, string? message, string? nation, IFormCollection collection)
         {
             List<MovieViewModel> model = new();
             try
             {
-                IEnumerable<Movie> movies=movieRepository.GetMovies().ToList();
+                IEnumerable<Movie> movies=movieRepository.GetMovies();
+                var temp = movies.ToList();
                 IEnumerable<Movie> searchResult;
                 IEnumerable<Movie> filterResult;
                 IEnumerable<Movie> nationResult;
@@ -73,6 +74,10 @@ namespace MovieWebsite.Controllers
                 {
                     nationResult = movieRepository.GetMovies().Where(m => m.Nation == nation).ToList();
                     movies = movies.IntersectBy(second: nationResult.Select(m => m.Id), m => m.Id);
+                }
+                if(movies.Count() < temp.Count)
+                {
+                    ViewBag.ResetList = true;
                 }
                 if (movies.Any())
                 {
@@ -653,7 +658,7 @@ namespace MovieWebsite.Controllers
         }
         private void SetDatalistForMovieInput()
         {
-            var releaseYear=movieRepository.GetMovies().Select(m => m.ReleaseYear).ToList();
+            var releaseYear=movieRepository.GetMovies().Select(m => m.ReleaseYear).Distinct().ToList();
             var nation = movieRepository.GetMovies().Select(m => m.Nation).Distinct().ToList();
             ViewBag.ReleaseYear=releaseYear;
             ViewBag.Nation=nation;

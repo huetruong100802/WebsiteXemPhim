@@ -16,7 +16,7 @@ namespace MovieWebsite.Models.Movies
 
         [NotMapped]
         [DisplayName("Cover")]
-        public IFormFile ImageFile { get; set; }
+        public IFormFile? ImageFile { get; set; }
 
         [DisplayName("Nội dung")]
         public string? Description { get; set; } = null!;

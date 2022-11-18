@@ -17,18 +17,25 @@
                     <i class="fa fa-bookmark" aria-hidden="true"></i>
                 </button>
             </div>
-            <div class="collapse col-md-7" id="starRating">
-                <div class="btn-group">
-                    <div onmouseout="CRateSelected()">
-                        @for (int i = 1; i <= 10; i++)
-                        {
-                            <span class="starFade" id="Rate_@i" onclick="CRate(@i)" onmouseover="CRateOver(@i)" onmouseout="CRateOut(@i)"></span>
-                        }
+            <div class="collapse col-md-7 row justify-content-end" id="starRating">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="btn-group">
+                        <div onmouseout="CRateSelected()">
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <span class="starFade" id="Rate_@i" onclick="CRate(@i)" onmouseover="CRateOver(@i)" onmouseout="CRateOut(@i)"></span>
+                            }
+                        </div>
+                        <input type="hidden" name="Rating" id="Rating" value="0" />
+                        <input type="hidden" value="@Model.Id" id="movieId" />
+                        <input type="submit" value="Submit Rating" class="btn btn-warning" onclick="Submit()" />
                     </div>
-                    <input type="hidden" name="Rating" id="Rating" value="0" />
-                    <input type="hidden" value="@Model.Id" id="movieId" />
-                    <input type="submit" value="Submit Rating" class="btn btn-warning" onclick="Submit()" />
-                </div>
+                }
+                else
+                {
+                    <a class="btn btn-danger col-md-5" asp-area="Identity" asp-page="/Account/Login">Đăng nhập để đánh giá</a>
+                }
             </div>
             <div class="col-md-0">
                 <a role="button" class="btn btn-success" data-bs-toggle="collapse" href="#starRating" aria-expanded="false" aria-controls="starRating">
@@ -63,24 +70,28 @@
                     <div class="vstack" style="overflow-y:scroll;max-height:350px;">
                         @foreach (var movie in item.MoviesSuggestion)
                         {
-                            <div>
-                                <a class=" nav-link text-dark hstack gap-1" asp-action="Details" asp-route-id="@movie.Id">
-                                    <img class="movie-icon img-thumbnail rounded" decoding="async" src="@("~/image/"+movie.ImageName)" asp-append-version="true" alt="Card cover image">
-                                    <dl class="row">
-                                        <dt class="col-md-12">
-                                            @movie.Title
-                                        </dt>
-                                        <dd class="col-md-12">
-                                            @movie.Views Lượt xem
-                                        </dd>
-                                        <dd class="col-md-12">
-                                            @for(int i=0;i<movie.Rating;i++){
-                                                <i class="fa fa-star" aria-hidden="true"></i>
-                                            }
-                                        </dd>
-                                    </dl>
-                                </a>
-                            </div>
+                            if (movie.Deleted == false)
+                            {
+                                <div>
+                                    <a class=" nav-link text-dark hstack gap-1" asp-action="Details" asp-route-id="@movie.Id">
+                                        <img class="movie-icon img-thumbnail rounded" decoding="async" src="@("~/image/"+movie.ImageName)" asp-append-version="true" alt="Card cover image">
+                                        <dl class="row">
+                                            <dt class="col-md-12">
+                                                @movie.Title
+                                            </dt>
+                                            <dd class="col-md-12">
+                                                @movie.Views Lượt xem
+                                            </dd>
+                                            <dd class="col-md-12">
+                                                @for (int i = 0; i < movie.Rating; i++)
+                                                {
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                }
+                                            </dd>
+                                        </dl>
+                                    </a>
+                                </div>
+                            }
                         }
                     </div>
                 </div>
