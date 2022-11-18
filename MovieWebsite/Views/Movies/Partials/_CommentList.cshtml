@@ -1,0 +1,29 @@
+﻿@model IEnumerable<BusinessObject.Models.Comment>
+@{
+    
+}
+<div class="card-text" style="height:300px;overflow-y:scroll;">
+    <div class="vstack gap-2 mx-auto">
+        @if (Model.Any())
+        {
+            @foreach(var comment in Model){
+
+                <div class="p-2 border-bottom rounded">
+                    <div>
+                        <strong>@comment.User.UserName</strong>
+                    </div>
+                    <div>
+                        @comment.CommentDetail
+                    </div>
+                    <div>
+                        <p> <small>@comment.CreatedDate</small></p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="p-2 text-center">Không có bình luận nào</div>
+        }
+    </div>
+</div>

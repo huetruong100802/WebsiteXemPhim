@@ -1,0 +1,47 @@
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityRole>
+@{
+    ViewData["Title"] = "Role Manager";
+    var result = ViewBag.CreateResult;
+    var message = ViewBag.Message;
+}
+<h1>Role Manager</h1>
+<form asp-action="Create" asp-controller="Roles" method="post">
+    <div class="input-group">
+        <input name="roleName" class="form-control w-25">
+        <span class="input-group-btn">
+            <button class="btn btn-info">Add New Role</button>
+        </span>
+    </div>
+</form>
+@if (result!=null)
+{
+    if (result == true)
+    {
+        <div class="alert alert-success">@message</div>
+    }
+    else
+    {
+        <div class="alert alert-danger">@message</div>
+    }
+}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@role.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@role.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

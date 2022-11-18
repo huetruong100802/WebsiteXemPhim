@@ -1,0 +1,26 @@
+﻿@model IEnumerable<MovieWebsite.Models.Movies.MovieViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    var message = ViewBag.Message;
+    var searchString = ViewBag.SearchString;
+}
+
+<h1>
+    @if(searchString!=null){
+        Output.WriteLine($"TÌM KIẾM PHIM:{searchString}");
+    }
+    else
+    {
+        Output.WriteLine($"DANH SÁCH PHIM");
+    }
+    </h1>
+@if (message != null)
+{
+    <div class="alert alert-info">@message</div>
+}
+@if(User.IsInRole(role:Roles.SuperAdmin.ToString())){
+    <partial name="Partials/_AdvanceIndex"/>
+}else{
+    <partial name="Partials/_BasicIndex" />
+}

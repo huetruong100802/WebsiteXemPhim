@@ -1,0 +1,16 @@
+﻿@model Comment
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var movieId = ViewBag.MovieId;
+    var url = this.Context.Request.Path.Value;
+}
+@if(SignInManager.IsSignedIn(User)){
+    <form asp-action="AddComment" asp-controller="Movies" >
+        <span asp-validation-for="CommentDetail" class="text-warning"></span>
+        <textarea placeholder="Nêu cảm nghĩ của bạn ở đây" asp-for="CommentDetail" cols="24" rows="5" class="form-control" style="resize:none"></textarea>
+        <input name="movieId" type="hidden" value="@movieId" />
+        <input name="currentUrl" type="hidden" value="@url" />
+        <input class="btn btn-primary" type="submit" role="button" value="Add"/>
+    </form>
+}

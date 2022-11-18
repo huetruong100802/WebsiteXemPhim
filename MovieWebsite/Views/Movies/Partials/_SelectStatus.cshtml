@@ -1,0 +1,22 @@
+﻿@model List<MovieWebsite.Models.Movies.ManageMovieStatusModel>
+@{
+    int i=0;
+}
+
+<div class="form-group">
+    <label class="control-label">Status</label>
+    <div>
+        @if(Model !=null){
+            while (i < Model.Count)
+            {
+                <div class="btn-group-toggle" data-toggle="buttons">
+                    <input type="hidden" asp-for="@Model[i].Name" />
+                    <label class="btn btn-light" asp-for="@Model[i].Selected">
+                        <input asp-for="@Model[i].Selected">@Model[i].Name
+                    </label>
+                </div>
+                i++;
+            }
+        }
+    </div>
+</div>

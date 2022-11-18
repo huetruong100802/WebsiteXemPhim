@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Not Found";
+    var errorMessage = ViewBag.ErrorMessage;
+    var path = ViewBag.Path;
+    var qs = ViewBag.QS;
+}
+<h1>
+    @errorMessage
+</h1>
+<h2>
+    @path@qs
+</h2>
+<a asp-action="Index" asp-controller="Movies">
+    Click here to navigate back to the home page
+</a>

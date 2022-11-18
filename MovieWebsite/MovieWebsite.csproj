@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-MovieWebsite-59B22C8A-F4C1-484C-AEC6-138F39072B52</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\video\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessObject\BusinessObject.csproj" />
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>

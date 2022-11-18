@@ -1,0 +1,15 @@
+﻿@model IEnumerable<BusinessObject.Models.Episode>
+<div class="card-body">
+    @if(Model != null){
+        <div class="btn-toolbar" role="toolbar">
+            @foreach (var item in Model)
+            {
+                <div class="btn-group" role="group">
+                    <a class="btn btn-secondary" asp-action="ViewMovie" asp-controller="Movies" asp-route-id="@item.Id" role="button">@item.Title</a>
+                </div>
+            }
+        </div>
+    }else{
+        <div class="card-text">Chưa có tập nào</div>
+    }
+</div>

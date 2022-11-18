@@ -1,0 +1,44 @@
+﻿@model List<MovieWebsite.Models.User.UserRolesViewModel>
+@{
+    ViewData["Title"] = "Index";
+    var searchString = ViewBag.SearchString;
+    var roleSelectList = ViewBag.RoleSelectList;
+}
+<h1>User Roles</h1>
+<form asp-action="Index" asp-controller="UserRoles" method="post">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <a asp-action="Index" role="button" class="btn btn-outline-secondary">Reset</a>
+        </div>
+        <input name="searchString" placeholder="Nhập tên hoặc email mà bạn muốn tìm" value="@searchString" class="form-control w-25">
+        <select asp-items="roleSelectList" name="roleName" class="input-group-append">
+            <option value="">All Roles</option>
+        </select>
+        <span class="input-group-btn">
+            <button class="btn btn-info">Search</button>
+        </span>
+    </div>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>User Name</th>
+            <th>Roles</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+                <td>@string.Join(" , ", user.Roles.ToList())</td>
+                <td>
+                    <a class="btn btn-primary" asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.UserId">Manage Roles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,84 @@
+﻿@model IEnumerable<MovieWebsite.Models.Movies.MovieViewModel>
+@{
+    var roles = ViewBag.MovieRoles;
+}
+<p class="btn-group">
+    <a asp-action="Create" role="button" class="btn btn-primary">Create New</a>
+    <a asp-action="Index" role="button" class="btn btn-secondary">Reset list</a>
+    <a asp-action="Index" asp-controller="People" class="btn btn-info">Manage people</a>
+</p>
+<div class="table-responsive-md">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ImageName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Genres)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReleaseYear)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nation)
+                </th>
+                <th>Manage</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        <img decoding="async" src="@("~/image/"+item.ImageName)" asp-append-version="true" class="movie-cover" />
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var genre in item.Genres!)
+                            {
+                                <li>@genre</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReleaseYear)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nation)
+                    </td>
+                    <td>
+                        <a asp-action="Index" asp-controller="Episodes" asp-route-id="@item.Id">Manage episodes</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-secondary" asp-action="Remove" asp-route-id="@item.Id" role="button">
+                            @if (item.Deleted)
+                            {
+                                <p>Add</p>
+                            }
+                            else
+                            {
+                                <p>Remove</p>
+                            }
+                        </a>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id" role="button">Edit</a>
+                            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.Id" role="button">Details</a>
+                            <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@item.Id" role="button">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

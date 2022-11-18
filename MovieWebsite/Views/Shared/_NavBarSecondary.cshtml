@@ -1,0 +1,33 @@
+﻿@{
+    var genreList = ViewBag.GenreNavBar;
+    var nationList = ViewBag.NationNavBar;
+}
+@if(genreList!=null){
+    <nav class="navbar navbar-collapse navbar-expand-sm navbar-toggleable-sm collapse d-sm-inline-flex justify-content-between navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Movies" asp-action="Index">Trang chủ</a>
+                </li>
+                <li class="nav-item dropdown ">
+                    <a class="nav-link text-dark btn dropdown-toggle" role="button" data-bs-toggle="dropdown" id="genres" aria-expanded="false">Thể loại</a>
+                    <div class="dropdown-menu" aria-labelledby="#genres">
+                        @foreach (var genre in genreList)
+                        {
+                            <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Movies" asp-action="Index" asp-route-genreName="@genre.Name">@genre.Name</a>
+                        }
+                    </div>
+                </li>
+                <li class="nav-item dropdown ">
+                    <a class="nav-link text-dark btn dropdown-toggle" role="button" data-bs-toggle="dropdown" id="nations" aria-expanded="false">Quốc gia</a>
+                    <div class="dropdown-menu" aria-labelledby="#nations">
+                        @foreach (var nation in nationList)
+                        {
+                            <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Movies" asp-action="Index" asp-route-nation="@nation">@nation</a>
+                        }
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+}

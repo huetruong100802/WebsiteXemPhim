@@ -1,0 +1,157 @@
+﻿@using DataAccess.Repository
+@using DataAccess.Repository.Interface
+@model MovieWebsite.Models.Movies.MovieViewModel
+@{
+    Layout = "_Layout";
+    ViewData["MovieId"] = Model.Id;
+    var roles = ViewBag.MovieRoles;
+}
+<div class="row">
+    <div class="col-lg-8">
+        <div>
+            @RenderBody()
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary">
+                    <i class="fa fa-bookmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="collapse col-md-7" id="starRating">
+                <div class="btn-group">
+                    <div onmouseout="CRateSelected()">
+                        @for (int i = 1; i <= 10; i++)
+                        {
+                            <span class="starFade" id="Rate_@i" onclick="CRate(@i)" onmouseover="CRateOver(@i)" onmouseout="CRateOut(@i)"></span>
+                        }
+                    </div>
+                    <input type="hidden" name="Rating" id="Rating" value="0" />
+                    <input type="hidden" value="@Model.Id" id="movieId" />
+                    <input type="submit" value="Submit Rating" class="btn btn-warning" onclick="Submit()" />
+                </div>
+            </div>
+            <div class="col-md-0">
+                <a role="button" class="btn btn-success" data-bs-toggle="collapse" href="#starRating" aria-expanded="false" aria-controls="starRating">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">@Html.DisplayNameFor(m=>m.Comments)</h5>
+            </div>
+            <div class="card-body">
+                <partial name="Partials/_CommentCreate" model="Model?.Comment" />
+                <partial name="Partials/_CommentList" model="Model?.Comments" />
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="row justify-content-center">
+            <h4 class="col">
+                Có thể bạn muốn xem
+            </h4>
+        </div>
+        <hr />
+        @foreach (var item in Model!.movieSuggests)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">@item.Title</span>
+                </div>
+                <div class="card-body">
+                    <div class="vstack" style="overflow-y:scroll;max-height:350px;">
+                        @foreach (var movie in item.MoviesSuggestion)
+                        {
+                            <div>
+                                <a class=" nav-link text-dark hstack gap-1" asp-action="Details" asp-route-id="@movie.Id">
+                                    <img class="movie-icon img-thumbnail rounded" decoding="async" src="@("~/image/"+movie.ImageName)" asp-append-version="true" alt="Card cover image">
+                                    <dl class="row">
+                                        <dt class="col-md-12">
+                                            @movie.Title
+                                        </dt>
+                                        <dd class="col-md-12">
+                                            @movie.Views Lượt xem
+                                        </dd>
+                                        <dd class="col-md-12">
+                                            @for(int i=0;i<movie.Rating;i++){
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                            }
+                                        </dd>
+                                    </dl>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    function Submit() {
+        if ($("#Rating").val() == "0") {
+            alert("Please rate this service provider.");
+        }
+        else {
+            var request;
+            var id = document.getElementById("movieId").value;
+            var rating = $("#Rating").val();
+            if (window.XMLHttpRequest) {
+                //New browsers.
+                request = new XMLHttpRequest();
+            }
+            else if (window.ActiveXObject) {
+                //Old IE Browsers.
+                request = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            if (request != null) {
+                var url = "/Movies/Rating";
+                request.open("POST", url, true);
+                var msg = "id=" + id+"&rating="+rating;
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                request.onreadystatechange = function () {
+                    if (request.readyState == 4 && request.status == 200) {
+                        var response = JSON.parse(request.responseText);
+                        alert("Your Rate has been counted!\n" + response);
+                    }
+                };
+                request.send(msg);
+            }
+        }
+    }
+
+    function CRate(r) {
+        $("#Rating").val(r);
+        for (var i = 1; i <= r; i++) {
+            $("#Rate_" + i).attr('class', 'starGlow');
+        }
+        // unselect remaining
+        for (var i = r + 1; i <= 5; i++) {
+            $("#Rate_" + i).attr('class', 'starFade');
+        }
+    }
+
+    function CRateOver(r) {
+        for (var i = 1; i <= r; i++) {
+            $("#Rate_" + i).attr('class', 'starGlow');
+        }
+    }
+
+    function CRateOut(r) {
+        for (var i = 1; i <= r; i++) {
+            $("#Rate_" + i).attr('class', 'starFade');
+        }
+    }
+
+    function CRateSelected() {
+        var setRating = $("#Rating").val();
+        for (var i = 1; i <= 10; i++) {
+            if(i<=setRating){
+                $("#Rate_" + i).attr('class', 'starGlow');
+            }else{
+                $("#Rate_" + i).attr('class', 'starFade');
+            }
+        }
+    }
+</script>

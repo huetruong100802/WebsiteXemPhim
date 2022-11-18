@@ -1,0 +1,17 @@
+﻿@model IEnumerable<MovieWebsite.Models.Movies.MovieViewModel>
+
+<div class="card-group" style="position:relative;">
+    @foreach (var item in Model)
+    {
+        if(item.Deleted==false){
+            <div class="">
+                <a class="movie-item card nav-link text-dark" asp-action="Details" asp-route-id="@item.Id">
+                    <img class="movie-cover card-img-top" decoding="async" src="@("~/image/"+item.ImageName)" asp-append-version="true" alt="Card cover image">
+                    <div class="movie-overlay card-body">
+                        <p class="card-title">@item.Title</p>
+                    </div>
+                </a>
+            </div>
+        }
+    }
+</div>

@@ -1,0 +1,46 @@
+﻿@model List<MovieWebsite.Models.Movies.ManageMoviePeopleModel>
+@{
+    int i = 0;
+    IEnumerable<Role> roles = ViewBag.MovieRoles;
+}
+
+<div class="form-group">
+    <label>People Invovle</label>
+    <div class="card">
+        @if (Model !=null)
+        {
+            if(roles.Any()){
+                foreach (var role in roles)
+                {
+                    <label class="card-header">@role.Name</label>
+                    <div class="card-body">
+                        @if (Model.Any())
+                        {
+                            while (i < Model.Count)
+                            {
+                                if (Model[i].RoleId == role.Id)
+                                {
+                                    <div class="btn-group" data-toggle="button">
+                                        <input type="hidden" asp-for="@Model[i].Name" />
+                                        <input type="hidden" asp-for="@Model[i].RoleId" />
+                                        <label class="btn btn-light" asp-for="@Model[i].Selected">
+                                            <input asp-for="@Model[i].Selected"> @Model[i].Name
+                                        </label>
+                                    </div>
+                                }
+                                i++;
+                            }
+                            i = 0;
+                        }
+                        else
+                        {
+                            <a asp-action="Index" asp-controller="People">Manage people</a>
+                        }
+                    </div>
+                    
+                }
+            }
+        }
+    </div>
+
+</div>

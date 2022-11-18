@@ -1,0 +1,42 @@
+﻿@model IEnumerable<BusinessObject.Models.Genre>
+
+@{
+    ViewData["Title"] = "Index";
+    var message = ViewBag.Message;
+}
+
+<h1>Genre Manager</h1>
+<form asp-action="Create" asp-controller="Genres" method="post">
+    <div class="input-group">
+        <input name="genreName" class="form-control w-25">
+        <span class="input-group-btn">
+            <button class="btn btn-info">Add New Genre</button>
+        </span>
+    </div>
+</form>
+@if(message!=null){
+    <div class="alert alert-info">@message</div>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
