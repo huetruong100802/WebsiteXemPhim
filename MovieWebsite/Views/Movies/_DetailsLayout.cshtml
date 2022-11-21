@@ -125,6 +125,7 @@
                     if (request.readyState == 4 && request.status == 200) {
                         var response = JSON.parse(request.responseText);
                         alert("Your Rate has been counted!\n" + response);
+                        document.location.reload(true);
                     }
                 };
                 request.send(msg);

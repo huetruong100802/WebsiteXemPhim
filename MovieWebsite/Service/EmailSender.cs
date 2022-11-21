@@ -16,6 +16,7 @@ namespace MovieWebsite.Service
         }
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
+            
             var msg = new MailMessage()
             {
                 From= new MailAddress(address:"huetruong100802@gmail.com"),
