@@ -147,14 +147,15 @@ namespace MovieWebsite.Controllers
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { userId = userId, code = code },
+                values: new { userId = userId, code = code, returnUrl = Url.Content("~/") },
                 protocol: Request.Scheme);
+            string body = $"https://localhost:7224/Identity/Account/ConfirmEmail?userId={userId}&code={code}";
             await _emailSender.SendEmailAsync(
                 user.Email!,
                 "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>clicking here</a>.\n" +
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(body!)}'>clicking here</a>.\n" +
                 $"Your dedault password: Pa$$w0rd");
-            return RedirectToAction(nameof(Index), new {message=$"A confirm email has been generated and sent to{user.Email}" });
+            return RedirectToAction(nameof(Index), new {message=$"A confirm email has been generated and sent to {user.Email}" });
         }
         public IActionResult ActivateAccount(string userId) => RedirectToAction(nameof(ChangeAccountStatus), new {userId, emailConfirmed =true});
         public IActionResult DeActivateAccount(string userId) => RedirectToAction(nameof(ChangeAccountStatus), new {userId, emailConfirmed =false});
