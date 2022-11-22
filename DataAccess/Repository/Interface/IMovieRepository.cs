@@ -21,5 +21,7 @@ namespace DataAccess.Repository.Interface
         IEnumerable<Movie> GetMoviesByGenre(string genreName);
         IEnumerable<Movie> GetMoviesByKeyWord(string? keyWord);
         bool MovieIsInStatus(Movie movie, string statusName);
+        bool IsMovieFollowed(Movie movie, string userName);
+        public IEnumerable<Movie> GetMoviesByUserName(string userName);
     }
 }

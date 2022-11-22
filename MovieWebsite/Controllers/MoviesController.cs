@@ -30,6 +30,7 @@ namespace MovieWebsite.Controllers
         private readonly IMovieStatusRepository movieStatusRepository;
         private readonly IStatusRepository statusRepository;
         private readonly IRateRepository rateRepository;
+        private readonly IFollowedMovieRepository followedMovieRepository;
         public MoviesController(IWebHostEnvironment environment, UserManager<ApplicationUser> userManager)
         {
             movieRepository = new MovieRepository();
@@ -44,6 +45,7 @@ namespace MovieWebsite.Controllers
             movieStatusRepository= new MovieStatusRepository();
             statusRepository= new StatusRepository();
             rateRepository= new RateRepository();
+            followedMovieRepository= new FollowedMovieRepository();
             _environment = environment;
             _userManager = userManager;
         }
@@ -372,7 +374,7 @@ namespace MovieWebsite.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> CountView()
+        public async Task<IActionResult> CountView()
         {
             string id = Request.Form["id"];
             var movie = await movieRepository.GetMovieByIdAsync(id);
@@ -383,15 +385,15 @@ namespace MovieWebsite.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> Rating()
+        public async Task<IActionResult> Rating()
         {
             try
             {
-                string movieId = Request.Form["id"];
-                int rating = Int32.Parse(Request.Form["rating"]);
+                string movieId = Request.Form["id"]!;
+                int rating = Int32.Parse(Request.Form["rating"]!);
                 var movie = await movieRepository.GetMovieByIdAsync(movieId);
                 var user = await _userManager.GetUserAsync(User);
-                string id = movie.Id + user.Id;
+                string id = movie.Id + user!.Id;
                 Rate rate = await rateRepository.GetRateByIdAsync(id);
                 if (rate != null)
                 {
@@ -419,6 +421,47 @@ namespace MovieWebsite.Controllers
                 throw new Exception("Weird exception");
             }
             return Json("Thanks");
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> FollowMovie()
+        {
+            string message = "You have stopped following this movie";
+            try
+            {
+                string movieId = Request.Form["id"]!;
+                var movie = await movieRepository.GetMovieByIdAsync(movieId);
+                var user = await _userManager.GetUserAsync(User);
+                string id = movie.Id + user!.Id;
+                FollowedMovie followedMovie = await followedMovieRepository.GetFollowedMovieByIdAsync(id);
+                if (followedMovie != null)
+                {
+                    await followedMovieRepository.Delete(followedMovie);
+                }
+                else {
+                    message = "You have followed this movie";
+                    followedMovie = new()
+                    {
+                        Id = id,
+                        MovieId = movieId,
+                    };
+                    var appUser = await applicationUserRepository.GetApplicationUserByIdAsync(user.Id);
+                    if (appUser != null)
+                    {
+                        followedMovie.UserId = user.Id;
+                    }
+                    else
+                    {
+                        followedMovie.User = user;
+                    }
+                    await followedMovieRepository.AddFollowedMovie(followedMovie);
+                }
+            }
+            catch
+            {
+                throw new Exception("Weird exception");
+            }
+            return Json(message);
         }
         //--------------------------------------------------------------------------------------
         private async Task<string> GetFileNameAsync(IFormFile file)
@@ -494,6 +537,7 @@ namespace MovieWebsite.Controllers
                 Statuses= statusRepository.GetStatusesByMovieId(movie.Id).Select(m=>m.Name),
                 Views=movie.Views,
                 movieSuggests= MovieSuggest(movie),
+                IsFollowed=movieRepository.IsMovieFollowed(movie,User!.Identity.Name)
              };
         }
         private MovieInputModel GenerateMovieInputModel(Movie movie)

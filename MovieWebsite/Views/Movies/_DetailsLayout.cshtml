@@ -5,6 +5,7 @@
     Layout = "_Layout";
     ViewData["MovieId"] = Model.Id;
     var roles = ViewBag.MovieRoles;
+    var isMovieFollowed = Model.IsFollowed;
 }
 <div class="row">
     <div class="col-lg-8">
@@ -12,9 +13,33 @@
             @RenderBody()
         </div>
         <div class="d-flex justify-content-between">
+            <div class="modal fade" id="LoginNotification" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Vui lòng <a class="text-danger" asp-area="Identity" asp-page="/Account/Login">đăng nhập</a> để sử dụng tính năng này
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" aria-label="Close">Đóng</button>
+                            <a role="button" class="btn btn-outline-info" asp-area="Identity" asp-page="/Account/Login">đăng nhập</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-4">
-                <button type="button" class="btn btn-primary">
-                    <i class="fa fa-bookmark" aria-hidden="true"></i>
+                <button type="button" class="btn btn-primary" onclick="FollowMovie()">
+                    @if (isMovieFollowed)
+                    {
+                        <i class="fa fa-trash" aria-hidden="true" title="Hủy theo dõi phim"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-bookmark" aria-hidden="true" title="Theo dõi phim"></i>
+                    }
                 </button>
             </div>
             <div class="modal fade" id="starRating" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
@@ -24,33 +49,25 @@
                             <h5 class="modal-title" id="exampleModalLabel">Rating</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            <div class="btn-group modal-body">
-                                <div onmouseout="CRateSelected()">
-                                    @for (int i = 1; i <= 10; i++)
-                                    {
-                                        <span class="starFade" id="Rate_@i" onclick="CRate(@i)" onmouseover="CRateOver(@i)" onmouseout="CRateOut(@i)"></span>
-                                    }
-                                </div>
+                        <div class="btn-group modal-body">
+                            <div onmouseout="CRateSelected()">
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <span class="starFade" id="Rate_@i" onclick="CRate(@i)" onmouseover="CRateOver(@i)" onmouseout="CRateOut(@i)"></span>
+                                }
                             </div>
-                            <div class="modal-footer">
-                                <input type="hidden" name="Rating" id="Rating" value="0" />
-                                <input type="hidden" value="@Model.Id" id="movieId" />
-                                <input type="submit" value="Submit Rating" class="btn btn-warning" onclick="Submit()" />
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="modal-footer">
-                                <a class="btn btn-danger col-md-5" asp-area="Identity" asp-page="/Account/Login">Đăng nhập để đánh giá</a>
-                            </div>
-                        }
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="Rating" id="Rating" value="0" />
+                            <input type="hidden" value="@Model.Id" id="movieId" />
+                            <input type="submit" value="Submit Rating" class="btn btn-warning" onclick="Submit()" />
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-0">
-                <a role="button" class="btn btn-success" data-toggle="modal" href="#starRating" aria-expanded="false" onclick="OpenModal()">
+                <a id="rateButton" title="Đánh giá phim" role="button" class="btn btn-success" 
+                data-toggle="modal" href="#starRating" aria-expanded="false" onclick="RateMovie('#starRating')">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </div>
@@ -112,7 +129,6 @@
     </div>
 </div>
 <script>
-
     function Submit() {
         if ($("#Rating").val() == "0") {
             alert("Please rate this service provider.");
@@ -176,6 +192,46 @@
                 $("#Rate_" + i).attr('class', 'starGlow');
             }else{
                 $("#Rate_" + i).attr('class', 'starFade');
+            }
+        }
+    }
+</script>
+<script>
+    var userAuthorized = @User.Identity!.IsAuthenticated.ToString().ToLower();
+    function RateMovie(r){
+        if (!userAuthorized) {
+            OpenModal('#LoginNotification');
+        } else {
+            OpenModal(r);
+        }
+    }
+    function FollowMovie(){
+        if(!userAuthorized){
+            OpenModal('#LoginNotification');
+        }else{
+            var request;
+            var id = document.getElementById("movieId").value;
+            if (window.XMLHttpRequest) {
+                //New browsers.
+                request = new XMLHttpRequest();
+            }
+            else if (window.ActiveXObject) {
+                //Old IE Browsers.
+                request = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            if (request != null) {
+                var url = "/Movies/FollowMovie";
+                request.open("POST", url, true);
+                var msg = "id=" + id ;
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                request.onreadystatechange = function () {
+                    if (request.readyState == 4 && request.status == 200) {
+                        var response = JSON.parse(request.responseText);
+                        alert(response);
+                        document.location.reload(true);
+                    }
+                };
+                request.send(msg);
             }
         }
     }

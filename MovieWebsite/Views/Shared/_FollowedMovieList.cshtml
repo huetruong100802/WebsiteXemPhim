@@ -1,0 +1,41 @@
+﻿@{
+    List<Movie> followedMovies = ViewBag.FollowedMovies;
+}
+@if (followedMovies != null)
+{
+    if (User.Identity!.IsAuthenticated)
+    {
+        <div class="dropdown show">
+            <a class="btn btn-sm btn-primary dropdown-toggle" title="Danh sách phim theo dõi" 
+            href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-bookmark" aria-hidden="true"></i>
+                <span class="badge badge-pill badge-info">@followedMovies.Count</span>
+            </a>
+            <div class="dropdown-menu" style="width:20rem" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header row justify-content-center">
+                    <a role="button" class="col-md-4 fw-bold">Danh sách phim theo dõi</a>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div style="height: 15rem;overflow-y: scroll;overflow-x: clip;">
+                    @foreach (var movie in followedMovies)
+                    {
+                        <div class="dropdown small">
+                            <a class=" nav-link text-dark hstack gap-1" asp-action="Details" asp-route-id="@movie.Id">
+                                <img class="movie-icon img-thumbnail rounded" decoding="async" src="@("~/image/"+movie.ImageName)" asp-append-version="true" alt="Card cover image">
+                                <dl class="row">
+                                    <dt class="col-md-12">
+                                        @movie.Title
+                                    </dt>
+                                    <dd class="col-md-12">
+                                        @movie.Views Lượt xem
+                                    </dd>
+                                </dl>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+

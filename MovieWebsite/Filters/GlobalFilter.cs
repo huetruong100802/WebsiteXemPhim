@@ -21,8 +21,10 @@ namespace MovieWebsite.Filters
             var controller = context.Controller as Controller;
             if(controller != null)
             {
+                var user = controller.HttpContext.User;
                 controller.ViewData["GenreNavBar"] = _genreRepository.GetGenres().ToList();
                 controller.ViewData["NationNavBar"]= _movieRepository.GetMovies().Where(m=>m.Nation!=null).Select(m=>m.Nation).Distinct().ToList();
+                controller.ViewData["FollowedMovies"]=_movieRepository.GetMoviesByUserName(user.Identity.Name!).Distinct().ToList() ;
             }
             base.OnActionExecuting(context);
         }

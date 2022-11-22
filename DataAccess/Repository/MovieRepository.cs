@@ -40,9 +40,19 @@ namespace DataAccess.Repository
             return MovieDao.Instance.GetMoviesByKeyWord(keyWord);
         }
 
+        public IEnumerable<Movie> GetMoviesByUserName(string userName)
+        {
+            return MovieDao.Instance.GetMoviesByUserName(userName);
+        }
+
         public Task Hide(Movie movie)
         {
             return MovieDao.Instance.Hide(movie);
+        }
+
+        public bool IsMovieFollowed(Movie movie, string userName)
+        {
+            return MovieDao.Instance.IsMovieFollowed(movie, userName);
         }
 
         public bool MovieIsInGenre(Movie movie, string genreName)
@@ -64,5 +74,6 @@ namespace DataAccess.Repository
         {
             return MovieDao.Instance.Update(movie);
         }
+
     }
 }

@@ -91,7 +91,8 @@ namespace DataAccess
         {
             MovieDbContext _context = new MovieDbContext();
             var movies = await _context.Movies
-                .Include(m => m.MovieGenres).Include(m => m.Episodes).Include(m => m.Rates).Include(m=>m.MovieStatuses)
+                .Include(m => m.MovieGenres).Include(m => m.Episodes)
+                .Include(m => m.Rates).Include(m=>m.MovieStatuses).Include(m=>m.FollowedMovies)
                 .FirstOrDefaultAsync(m => m.Id == id);
             return movies!;
         }
@@ -183,6 +184,31 @@ namespace DataAccess
                              where m.Movie == movie && m.Status.Name == statusName
                              select m;
             return movieGenre.Any();
+        }
+
+        public bool IsMovieFollowed(Movie movie, string userName)
+        {
+            MovieDbContext _context = new MovieDbContext();
+            var followedMovie = from m in _context.FollowedMovies.Include(m => m.Movie).Include(m => m.User)
+                                where m.Movie == movie && m.User!.UserName==userName
+                                select m;
+            return followedMovie.Any();
+        }
+        public IEnumerable<Movie> GetMoviesByUserName(string userName)
+        {
+            IQueryable<Movie> FollowedMovies;
+            try
+            {
+                MovieDbContext _context = new MovieDbContext();
+                FollowedMovies = from m in _context.FollowedMovies.Include(m => m.User).Include(m => m.Movie)
+                                 where m.User.UserName== userName
+                                 select m.Movie;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return FollowedMovies;
         }
     }
 }

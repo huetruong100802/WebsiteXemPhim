@@ -34,5 +34,7 @@ public partial class Movie
     public virtual ICollection<MoviePeople> MoviePeople { get; } = new List<MoviePeople>();
     public virtual ICollection<MovieStatus> MovieStatuses { get; } = new List<MovieStatus>();
     [DisplayName("Tổng lượt xem")]
-    public int Views { get; set; } = 0;
+    public int Views { get; set; } = 0; 
+    [DisplayName("Tủ phim")]
+    public virtual ICollection<FollowedMovie> FollowedMovies { get; set; } = new List<FollowedMovie>();
 }

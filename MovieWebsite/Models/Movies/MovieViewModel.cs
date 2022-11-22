@@ -21,5 +21,6 @@ namespace MovieWebsite.Models.Movies
         public Comment? Comment { get; set; } = null!;
         [DisplayName("Phim được đề xuất")]
         public IEnumerable<MovieSuggestModel> movieSuggests { get; set; } = new List<MovieSuggestModel>();
+        public bool IsFollowed { get; set; }=false;
     }
 }

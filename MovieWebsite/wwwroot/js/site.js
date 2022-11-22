@@ -3,6 +3,6 @@
 
 // Write your JavaScript code.
 
-function OpenModal() {
-    $('.modal').modal('show');
+function OpenModal(r) {
+    $(r).modal('show');
 }

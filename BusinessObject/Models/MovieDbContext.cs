@@ -33,6 +33,7 @@ public partial class MovieDbContext : DbContext
     public virtual DbSet<MoviePeople> MoviePeoples { get; set; }
     public virtual DbSet<Status> Statuses { get; set; }
     public virtual DbSet<MovieStatus> MovieStatuses { get; set; }
+    public virtual DbSet<FollowedMovie> FollowedMovies { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -143,6 +144,17 @@ public partial class MovieDbContext : DbContext
 
             entity.HasOne(d => d.Movie).WithMany(p => p.MovieStatuses).HasForeignKey(d => d.MovieId);
             entity.HasOne(d => d.Status).WithMany(p => p.MovieStatuses).HasForeignKey(d => d.StatusId);
+        });
+        modelBuilder.Entity<FollowedMovie>(entity =>
+        {
+            entity.ToTable("FollowedMovie");
+            entity.HasIndex(e => e.MovieId, "IX_FollowedMovies_MovieId");
+
+            entity.HasIndex(e => e.UserId, "IX_FollowedMovies_UserId");
+
+            entity.HasOne(d => d.Movie).WithMany(p => p.FollowedMovies).HasForeignKey(d => d.MovieId);
+
+            entity.HasOne(d => d.User).WithMany(p => p.FollowedMovies).HasForeignKey(d => d.UserId);
         });
         OnModelCreatingPartial(modelBuilder);
     }
