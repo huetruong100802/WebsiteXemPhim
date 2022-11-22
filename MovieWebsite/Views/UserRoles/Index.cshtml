@@ -1,10 +1,18 @@
-﻿@model List<MovieWebsite.Models.User.UserRolesViewModel>
+﻿@using MovieWebsite.Models.User;
+@model IEnumerable<MovieWebsite.Models.User.UserRolesViewModel>
 @{
     ViewData["Title"] = "Index";
     var searchString = ViewBag.SearchString;
     var roleSelectList = ViewBag.RoleSelectList;
+    var newUser = new UserInputModel();
+    var message = ViewBag.Message;
 }
-<h1>User Roles</h1>
+<h1>
+    User Roles
+    <a class="btn btn-primary" role="button" aria-expanded="false" onclick="OpenModal()">Add a user</a>
+</h1>
+<partial name="_Message" model="message" />
+<partial name="_Add" model="newUser" />
 <form asp-action="Index" asp-controller="UserRoles" method="post">
     <div class="input-group">
         <div class="input-group-prepend">
@@ -22,9 +30,10 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Email</th>
-            <th>User Name</th>
-            <th>Roles</th>
+            <th>@Html.DisplayNameFor(model=>model.Email)</th>
+            <th>@Html.DisplayNameFor(model=>model.UserName)</th>
+            <th>@Html.DisplayNameFor(model=>model.Roles)</th>
+            <th>@Html.DisplayNameFor(model=>model.EmailConfirm)</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -35,8 +44,20 @@
                 <td>@user.Email</td>
                 <td>@user.UserName</td>
                 <td>@string.Join(" , ", user.Roles.ToList())</td>
+                <td>@user.EmailConfirm</td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.UserId">Manage Roles</a>
+                    <div class="btn-group-vertical">
+                        <a class="btn btn-info" asp-action="Manage" asp-route-userId="@user.UserId">Manage Roles</a>
+                        <a class="btn btn-secondary" asp-action="SendConfirmedEmail" asp-route-userId="@user.UserId">Send Confirm Email</a>
+                        @if (!user.EmailConfirm)
+                        {
+                            <a class="btn btn-success" asp-action="ActivateAccount" asp-route-userId="@user.UserId">Activate</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger" asp-action="DeActivateAccount" asp-route-userId="@user.UserId">Deactivate</a>
+                        }
+                    </div>
                 </td>
             </tr>
         }

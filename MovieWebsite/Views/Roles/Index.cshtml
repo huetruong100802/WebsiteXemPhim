@@ -1,7 +1,6 @@
 ﻿@model List<Microsoft.AspNetCore.Identity.IdentityRole>
 @{
     ViewData["Title"] = "Role Manager";
-    var result = ViewBag.CreateResult;
     var message = ViewBag.Message;
 }
 <h1>Role Manager</h1>
@@ -13,17 +12,7 @@
         </span>
     </div>
 </form>
-@if (result!=null)
-{
-    if (result == true)
-    {
-        <div class="alert alert-success">@message</div>
-    }
-    else
-    {
-        <div class="alert alert-danger">@message</div>
-    }
-}
+<partial name="_Message" model="message"/>
 <table class="table table-striped">
     <thead>
         <tr>

@@ -9,10 +9,7 @@
 <h1>
     <a asp-controller="Movies" asp-action="Details" asp-route-id="@movieId">@movieId.ToUpperInvariant() </a>
 </h1>
-@if (message != null)
-{
-    <div class="alert alert-info">@message</div>
-}
+<partial name="_Message" model="message" />
 <p>
     <a asp-action="Create" asp-route-id="@movieId">Create New</a>
 </p>

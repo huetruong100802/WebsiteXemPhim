@@ -14,11 +14,8 @@
     {
         Output.WriteLine($"DANH SÁCH PHIM");
     }
-    </h1>
-@if (message != null)
-{
-    <div class="alert alert-info">@message</div>
-}
+</h1>
+<partial name="_Message" model="message" />
 @if(User.IsInRole(role:Roles.SuperAdmin.ToString())){
     <partial name="Partials/_AdvanceIndex"/>
 }else{

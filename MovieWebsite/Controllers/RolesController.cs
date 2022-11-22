@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MovieWebsite.Enums;
 
 namespace MovieWebsite.Controllers
 {
@@ -15,15 +16,23 @@ namespace MovieWebsite.Controllers
         // GET: RoleManagerController
         public async Task<IActionResult> Index(bool? result)
         {
-            var roles = await _roleManager.Roles.ToListAsync();
-            ViewData["CreateResult"]=result;
-            if (result==true)
+            List<IdentityRole> roles=new();
+            try
             {
-                ViewBag.Message = "Thao tác thành công!";
+                roles = await _roleManager.Roles.ToListAsync();
+                ViewData["CreateResult"] = result;
+                if (result == true)
+                {
+                    ViewBag.Message = "Thao tác thành công!";
+                }
+                if(result == false)
+                {
+                    ViewBag.Message = "Error: Không thể để role trống";
+                }
             }
-            else
+            catch(Exception ex)
             {
-                ViewBag.Message = "Thao tác thất bại!";
+                ViewBag.Message = "Error:"+ ex.Message;
             }
             return View(roles);
         }
@@ -52,7 +61,7 @@ namespace MovieWebsite.Controllers
                 await _roleManager.CreateAsync(new IdentityRole(roleName.Trim()));
                 result = true;
             }
-            return RedirectToAction(nameof(Index), new {result=result});
+            return RedirectToAction(nameof(Index), new { result });
         }
 
         // GET: RoleManagerController/Edit/5

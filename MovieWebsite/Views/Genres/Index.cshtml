@@ -14,9 +14,7 @@
         </span>
     </div>
 </form>
-@if(message!=null){
-    <div class="alert alert-info">@message</div>
-}
+<partial name="_Message" model="message"/>
 <table class="table">
     <thead>
         <tr>

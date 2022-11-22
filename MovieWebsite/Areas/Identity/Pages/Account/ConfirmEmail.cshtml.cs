@@ -50,6 +50,7 @@ namespace MovieWebsite.Areas.Identity.Pages.Account
             if(result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: true);
+                await _userManager.AddToRoleAsync(user, Enums.Roles.Basic.ToString());
                 StatusMessage = "Thank you for confirming your email.";
             }
             else
